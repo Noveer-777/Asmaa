@@ -27,16 +27,34 @@ body{
   padding:32px;
   border-radius:26px;
   box-shadow:0 25px 60px rgba(0,0,0,.6);
-  transition:transform .1s ease, box-shadow .15s ease;
+  transition:transform .15s ease, box-shadow .2s ease;
   position:relative;
   overflow:auto;
+  animation:cardIn 1.2s ease;
 }
+@keyframes cardIn{
+  from{opacity:0;transform:scale(.9)}
+  to{opacity:1;transform:scale(1)}
+}
+
+/* ===== Entrance for inside elements ===== */
+.enter-top{animation:fromTop 1s ease}
+.enter-bottom{animation:fromBottom 1s ease}
+.enter-left{animation:fromLeft 1s ease}
+.enter-right{animation:fromRight 1s ease}
+
+@keyframes fromTop{from{opacity:0;transform:translateY(-60px)}to{opacity:1}}
+@keyframes fromBottom{from{opacity:0;transform:translateY(60px)}to{opacity:1}}
+@keyframes fromLeft{from{opacity:0;transform:translateX(-60px)}to{opacity:1}}
+@keyframes fromRight{from{opacity:0;transform:translateX(60px)}to{opacity:1}}
 
 /* ===== Name ===== */
 .name{
   font-size:32px;
   color:#ff4f87;
+  animation:pulse 2.5s infinite;
 }
+@keyframes pulse{50%{transform:scale(1.05)}}
 .subtitle{color:#ffd6e3}
 
 /* ===== Slider ===== */
@@ -64,18 +82,23 @@ body{
 
 @keyframes fadeSlide{
   0%{opacity:0}
-  10%{opacity:1}
-  40%{opacity:1}
+  12%{opacity:1}
+  38%{opacity:1}
   50%{opacity:0}
   100%{opacity:0}
 }
 
+/* ===== Image animation (رجعت) ===== */
 .heart-img img{
   width:220px;
   height:280px;
   object-fit:cover;
   border-radius:18px;
-  transition:box-shadow .1s ease, transform .1s ease;
+  animation:imgFloat 6s ease-in-out infinite;
+  transition:box-shadow .25s ease, transform .25s ease;
+}
+@keyframes imgFloat{
+  50%{transform:scale(1.06)}
 }
 
 /* ===== Boxes ===== */
@@ -96,7 +119,7 @@ body{
   border-radius:22px;
   margin-top:16px;
   line-height:1.8;
-  transition:box-shadow .15s ease;
+  transition:box-shadow .25s ease;
 }
 .hidden{display:none}
 
@@ -113,13 +136,8 @@ body{
 
 .signature{margin-top:18px;color:#ffd6e3;font-size:14px;opacity:.9}
 
-/* ===== 🎂 Confetti (تورته أقل) ===== */
-.confetti{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:1;
-}
+/* ===== Confetti (تورته أقل) ===== */
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:1}
 .paper{
   position:absolute;
   top:-40px;
@@ -127,31 +145,20 @@ body{
   animation:fall linear infinite;
 }
 @keyframes fall{
-  to{
-    transform:translateY(120vh) rotate(360deg);
-    opacity:1;
-  }
+  to{transform:translateY(120vh) rotate(360deg)}
 }
 
-/* ===== ❤️ Hearts (أقل) ===== */
-.hearts{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:1;
-}
+/* ===== Hearts ===== */
+.hearts{position:fixed;inset:0;pointer-events:none;z-index:1}
 .bg-heart{
   position:absolute;
   bottom:-40px;
-  font-size:32px;
+  font-size:34px;
   animation:floatUp linear infinite;
   opacity:.4;
 }
 @keyframes floatUp{
-  to{
-    transform:translateY(-120vh);
-    opacity:.4;
-  }
+  to{transform:translateY(-120vh)}
 }
 </style>
 </head>
@@ -162,10 +169,10 @@ body{
 <div class="hearts" id="hearts"></div>
 
 <div class="card" id="card">
-  <h1 class="name" id="title">Tota ♥️</h1>
-  <p class="subtitle">أجمل إنسانة في الكون 🌎</p>
+  <h1 class="name enter-top" id="title">Tota ♥️</h1>
+  <p class="subtitle enter-bottom">أجمل إنسانة في الكون 🌎</p>
 
-  <div class="slider">
+  <div class="slider enter-left">
     <div class="slides">
       <div class="heart-img"><img src="photo1.jpg"></div>
       <div class="heart-img"><img src="photo2.jpg"></div>
@@ -173,27 +180,27 @@ body{
     </div>
   </div>
 
-  <div class="box">
+  <div class="box enter-right">
     <div class="big" id="days"></div>
     <div class="small">أيام صداقتنا 💕</div>
   </div>
 
-  <div class="message">
+  <div class="message enter-bottom">
     كل سنة وإنتي طيبة يا توته ❤️
   </div>
 
-  <button class="btn" onclick="toggleHidden()">💌 رسالة مخفية</button>
+  <button class="btn enter-left" onclick="toggleHidden()">💌 رسالة مخفية</button>
   <div class="message hidden" id="hiddenMsg">
     وجودك في حياتي فرق كتير 🤍
   </div>
 
-  <div class="signature">— Noveer</div>
+  <div class="signature enter-bottom">— Noveer</div>
 </div>
 
 <audio id="music" src="1.mp3" autoplay loop muted></audio>
 
 <script>
-/* ===== Counter ===== */
+/* Counter */
 const start=new Date("2024-08-26T00:00:00");
 setInterval(()=>{
   const diff=new Date()-start;
@@ -208,28 +215,28 @@ function toggleHidden(){
     hiddenMsg.style.display==="block"?"none":"block";
 }
 
-/* ===== 🎂 تورته أقل ===== */
-for(let i=0;i<18;i++){   /* كان كتير – بقى أقل */
+/* Confetti */
+for(let i=0;i<18;i++){
   const p=document.createElement("div");
   p.className="paper";
   p.textContent="🎂";
   p.style.left=Math.random()*100+"vw";
-  p.style.animationDuration=6+Math.random()*6+"s";
+  p.style.animationDuration=7+Math.random()*6+"s";
   confetti.appendChild(p);
 }
 
-/* ===== ❤️ قلوب أقل ===== */
+/* Hearts */
 setInterval(()=>{
   const h=document.createElement("div");
   h.className="bg-heart";
   h.textContent="❤️";
   h.style.left=Math.random()*100+"vw";
-  h.style.animationDuration=8+Math.random()*6+"s";
+  h.style.animationDuration=9+Math.random()*6+"s";
   hearts.appendChild(h);
-  setTimeout(()=>h.remove(),14000);
-},1200);  /* كان أسرع – بقى أهدى */
+  setTimeout(()=>h.remove(),15000);
+},1300);
 
-/* ===== Music + Bass ===== */
+/* ===== Bass (أنعم وأهدى) ===== */
 window.addEventListener("load",()=>{
   const audio=document.getElementById("music");
   audio.muted=false;
@@ -254,23 +261,25 @@ window.addEventListener("load",()=>{
     let bass=0;
     for(let i=0;i<20;i++) bass+=data[i];
     bass/=20;
-    let power=Math.min(bass/180,1);
+    let power=Math.min(bass/260,1); /* أهدى */
 
     imgs.forEach(img=>{
-      img.style.transform=`scale(${1+power*0.08})`;
-      img.style.boxShadow=`0 0 ${30+power*90}px rgba(255,79,135,.6)`;
+      img.style.boxShadow=
+        `0 0 ${18+power*45}px rgba(255,79,135,.45)`;
     });
 
-    title.style.textShadow=`0 0 ${30+power*90}px rgba(255,79,135,.9)`;
+    title.style.textShadow=
+      `0 0 ${18+power*45}px rgba(255,79,135,.7)`;
 
     if(hidden.style.display==="block"){
-      hidden.style.boxShadow=`0 0 ${30+power*90}px rgba(255,79,135,.6)`;
+      hidden.style.boxShadow=
+        `0 0 ${18+power*45}px rgba(255,79,135,.5)`;
     }
 
-    card.style.transform=`scale(${1+power*0.05})`;
+    card.style.transform=`scale(${1+power*0.03})`;
     card.style.boxShadow=
       `0 25px 60px rgba(0,0,0,.6),
-       0 0 ${50+power*120}px rgba(255,79,135,.5)`;
+       0 0 ${25+power*60}px rgba(255,79,135,.35)`;
 
     requestAnimationFrame(animate);
   }
