@@ -27,7 +27,9 @@ body{
   padding:32px;
   border-radius:26px;
   box-shadow:0 25px 60px rgba(0,0,0,.6);
-  transition:transform .15s ease, box-shadow .25s ease;
+  transition:transform .1s ease, box-shadow .15s ease;
+  position:relative;
+  overflow:auto;
 }
 
 /* ===== Name ===== */
@@ -73,7 +75,7 @@ body{
   height:280px;
   object-fit:cover;
   border-radius:18px;
-  transition:box-shadow .25s ease, transform .25s ease;
+  transition:box-shadow .1s ease, transform .1s ease;
 }
 
 /* ===== Boxes ===== */
@@ -94,7 +96,7 @@ body{
   border-radius:22px;
   margin-top:16px;
   line-height:1.8;
-  transition:box-shadow .25s ease;
+  transition:box-shadow .15s ease;
 }
 .hidden{display:none}
 
@@ -110,10 +112,54 @@ body{
 }
 
 .signature{margin-top:18px;color:#ffd6e3;font-size:14px;opacity:.9}
+
+/* ===== 🎂 Confetti (تورته أقل) ===== */
+.confetti{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:1;
+}
+.paper{
+  position:absolute;
+  top:-40px;
+  font-size:22px;
+  animation:fall linear infinite;
+}
+@keyframes fall{
+  to{
+    transform:translateY(120vh) rotate(360deg);
+    opacity:1;
+  }
+}
+
+/* ===== ❤️ Hearts (أقل) ===== */
+.hearts{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:1;
+}
+.bg-heart{
+  position:absolute;
+  bottom:-40px;
+  font-size:32px;
+  animation:floatUp linear infinite;
+  opacity:.4;
+}
+@keyframes floatUp{
+  to{
+    transform:translateY(-120vh);
+    opacity:.4;
+  }
+}
 </style>
 </head>
 
 <body>
+
+<div class="confetti" id="confetti"></div>
+<div class="hearts" id="hearts"></div>
 
 <div class="card" id="card">
   <h1 class="name" id="title">Tota ♥️</h1>
@@ -133,7 +179,7 @@ body{
   </div>
 
   <div class="message">
-    كل سنة وإنتي طيبة يا توته ❤️  
+    كل سنة وإنتي طيبة يا توته ❤️
   </div>
 
   <button class="btn" onclick="toggleHidden()">💌 رسالة مخفية</button>
@@ -162,7 +208,28 @@ function toggleHidden(){
     hiddenMsg.style.display==="block"?"none":"block";
 }
 
-/* ===== Soft BASS Reactive Glow 🌙 ===== */
+/* ===== 🎂 تورته أقل ===== */
+for(let i=0;i<18;i++){   /* كان كتير – بقى أقل */
+  const p=document.createElement("div");
+  p.className="paper";
+  p.textContent="🎂";
+  p.style.left=Math.random()*100+"vw";
+  p.style.animationDuration=6+Math.random()*6+"s";
+  confetti.appendChild(p);
+}
+
+/* ===== ❤️ قلوب أقل ===== */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="bg-heart";
+  h.textContent="❤️";
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=8+Math.random()*6+"s";
+  hearts.appendChild(h);
+  setTimeout(()=>h.remove(),14000);
+},1200);  /* كان أسرع – بقى أهدى */
+
+/* ===== Music + Bass ===== */
 window.addEventListener("load",()=>{
   const audio=document.getElementById("music");
   audio.muted=false;
@@ -184,33 +251,26 @@ window.addEventListener("load",()=>{
 
   function animate(){
     analyser.getByteFrequencyData(data);
-
-    /* Bass ناعم */
     let bass=0;
-    for(let i=0;i<18;i++) bass+=data[i];
-    bass/=18;
-
-    let power=Math.min(bass/260,1); // أخف
+    for(let i=0;i<20;i++) bass+=data[i];
+    bass/=20;
+    let power=Math.min(bass/180,1);
 
     imgs.forEach(img=>{
-      img.style.transform=`scale(${1+power*0.04})`;
-      img.style.boxShadow=
-        `0 0 ${18+power*30}px rgba(255,79,135,${0.25+power*0.25})`;
+      img.style.transform=`scale(${1+power*0.08})`;
+      img.style.boxShadow=`0 0 ${30+power*90}px rgba(255,79,135,.6)`;
     });
 
-    title.style.textShadow=
-      `0 0 ${20+power*35}px rgba(255,79,135,${0.45+power*0.25})`;
+    title.style.textShadow=`0 0 ${30+power*90}px rgba(255,79,135,.9)`;
 
     if(hidden.style.display==="block"){
-      hidden.style.boxShadow=
-        `0 0 ${18+power*30}px rgba(255,79,135,${0.3+power*0.25})`;
+      hidden.style.boxShadow=`0 0 ${30+power*90}px rgba(255,79,135,.6)`;
     }
 
-    const scale=1 + power*0.02;
-    card.style.transform=`scale(${scale})`;
+    card.style.transform=`scale(${1+power*0.05})`;
     card.style.boxShadow=
       `0 25px 60px rgba(0,0,0,.6),
-       0 0 ${22+power*40}px rgba(255,79,135,${0.2+power*0.25})`;
+       0 0 ${50+power*120}px rgba(255,79,135,.5)`;
 
     requestAnimationFrame(animate);
   }
