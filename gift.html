@@ -29,16 +29,24 @@ body{
   box-shadow:0 25px 60px rgba(0,0,0,.6);
   position:relative;
   overflow:auto;
-  transition:transform .12s ease, box-shadow .15s ease;
 }
+
+/* ===== Entrance Animations ===== */
+@keyframes fromTop{from{opacity:0;transform:translateY(-60px)}to{opacity:1;transform:none}}
+@keyframes fromBottom{from{opacity:0;transform:translateY(60px)}to{opacity:1;transform:none}}
+@keyframes fromLeft{from{opacity:0;transform:translateX(-60px)}to{opacity:1;transform:none}}
+@keyframes fromRight{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:none}}
+
+.enter-top{animation:fromTop .9s ease forwards}
+.enter-bottom{animation:fromBottom .9s ease forwards}
+.enter-left{animation:fromLeft .9s ease forwards}
+.enter-right{animation:fromRight .9s ease forwards}
 
 /* ===== Name ===== */
 .name{
   font-size:32px;
   color:#ff4f87;
-  animation:pulse 2.5s infinite;
 }
-@keyframes pulse{50%{transform:scale(1.05)}}
 .subtitle{color:#ffd6e3}
 
 /* ===== Slider ===== */
@@ -77,7 +85,7 @@ body{
   height:280px;
   object-fit:cover;
   border-radius:18px;
-  transition:box-shadow .3s ease;
+  transition:box-shadow .25s ease;
 }
 
 /* ===== Boxes ===== */
@@ -98,7 +106,6 @@ body{
   border-radius:22px;
   margin-top:16px;
   line-height:1.8;
-  transition:box-shadow .3s ease;
 }
 .hidden{display:none}
 
@@ -114,44 +121,17 @@ body{
 }
 
 .signature{margin-top:18px;color:#ffd6e3;font-size:14px;opacity:.9}
-
-/* ===== Confetti ===== */
-.confetti{position:fixed;inset:0;pointer-events:none;z-index:1}
-.paper{
-  position:absolute;
-  top:-40px;
-  font-size:22px;
-  animation:fall linear infinite;
-}
-@keyframes fall{
-  to{transform:translateY(120vh) rotate(360deg)}
-}
-
-/* ===== Hearts ===== */
-.hearts{position:fixed;inset:0;pointer-events:none;z-index:1}
-.bg-heart{
-  position:absolute;
-  bottom:-40px;
-  font-size:36px;
-  animation:floatUp linear infinite;
-  opacity:.45;
-}
-@keyframes floatUp{
-  to{transform:translateY(-120vh)}
-}
 </style>
 </head>
 
 <body>
 
-<div class="confetti" id="confetti"></div>
-<div class="hearts" id="hearts"></div>
+<div class="card">
 
-<div class="card" id="card">
-  <h1 class="name" id="title">Tota ♥️</h1>
-  <p class="subtitle">أجمل إنسانة في الكون 🌎</p>
+  <h1 class="name enter-top" id="title">Tota ♥️</h1>
+  <p class="subtitle enter-bottom">أجمل إنسانة في الكون 🌎</p>
 
-  <div class="slider">
+  <div class="slider enter-left">
     <div class="slides">
       <div class="heart-img"><img src="photo1.jpg"></div>
       <div class="heart-img"><img src="photo2.jpg"></div>
@@ -159,27 +139,28 @@ body{
     </div>
   </div>
 
-  <div class="box">
+  <div class="box enter-right">
     <div class="big" id="days"></div>
     <div class="small">أيام صداقتنا 💕</div>
   </div>
 
-  <div class="message">
+  <div class="message enter-bottom">
     كل سنة وإنتي طيبة يا توته ❤️
   </div>
 
-  <button class="btn" onclick="toggleHidden()">💌 رسالة مخفية</button>
+  <button class="btn enter-left" onclick="toggleHidden()">💌 رسالة مخفية</button>
   <div class="message hidden" id="hiddenMsg">
     وجودك في حياتي فرق كتير 🤍
   </div>
 
-  <div class="signature">— Noveer</div>
+  <div class="signature enter-bottom">— Noveer</div>
 </div>
 
+<!-- 🎵 MUSIC FILE -->
 <audio id="music" src="1.mp3" autoplay loop muted></audio>
 
 <script>
-/* Counter */
+/* ===== Counter ===== */
 const start=new Date("2024-08-26T00:00:00");
 setInterval(()=>{
   const diff=new Date()-start;
@@ -194,28 +175,7 @@ function toggleHidden(){
     hiddenMsg.style.display==="block"?"none":"block";
 }
 
-/* Confetti */
-for(let i=0;i<14;i++){
-  const p=document.createElement("div");
-  p.className="paper";
-  p.textContent="🎂";
-  p.style.left=Math.random()*100+"vw";
-  p.style.animationDuration=8+Math.random()*6+"s";
-  confetti.appendChild(p);
-}
-
-/* Hearts */
-setInterval(()=>{
-  const h=document.createElement("div");
-  h.className="bg-heart";
-  h.textContent="❤️";
-  h.style.left=Math.random()*100+"vw";
-  h.style.animationDuration=10+Math.random()*6+"s";
-  hearts.appendChild(h);
-  setTimeout(()=>h.remove(),16000);
-},1400);
-
-/* ===== Music Light + Card Breathing + Shake ===== */
+/* ===== Music Light Around Images ONLY ===== */
 window.addEventListener("load",()=>{
   const audio=document.getElementById("music");
   audio.muted=false;
@@ -231,39 +191,16 @@ window.addEventListener("load",()=>{
 
   const data=new Uint8Array(analyser.frequencyBinCount);
   const imgs=document.querySelectorAll(".heart-img img");
-  const title=document.getElementById("title");
-  const hidden=document.getElementById("hiddenMsg");
-  const card=document.getElementById("card");
 
   function animate(){
     analyser.getByteFrequencyData(data);
     let avg=data.reduce((a,b)=>a+b,0)/data.length;
-    let power=Math.min(avg/220,1);
+    let power=Math.min(avg/230,1);
 
-    /* نور */
     imgs.forEach(img=>{
       img.style.boxShadow=
-        `0 0 ${22+power*55}px rgba(255,79,135,${0.35+power*0.4})`;
+        `0 0 ${25+power*50}px rgba(255,79,135,${0.35+power*0.45})`;
     });
-
-    title.style.textShadow=
-      `0 0 ${24+power*60}px rgba(255,79,135,${0.55+power*0.4})`;
-
-    if(hidden.style.display==="block"){
-      hidden.style.boxShadow=
-        `0 0 ${24+power*60}px rgba(255,79,135,${0.4+power*0.4})`;
-    }
-
-    /* تنفس + هز خفيف */
-    const scale=1 + power*0.04;
-    const shake=(Math.sin(Date.now()/120))*power*1.2;
-
-    card.style.transform=
-      `scale(${scale}) translateX(${shake}px)`;
-
-    card.style.boxShadow=
-      `0 25px 60px rgba(0,0,0,.6),
-       0 0 ${28+power*70}px rgba(255,79,135,${0.25+power*0.45})`;
 
     requestAnimationFrame(animate);
   }
