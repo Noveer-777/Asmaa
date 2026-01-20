@@ -12,7 +12,6 @@ body{
   margin:0;
   min-height:100vh;
   background:linear-gradient(135deg,#d87a7a,#9c5b5b);
-  overflow-y:auto;
   display:flex;
   justify-content:center;
   align-items:flex-start;
@@ -20,82 +19,24 @@ body{
   padding:20px 0;
 }
 
-/* ===== Stars ===== */
-.stars{position:fixed;inset:0;pointer-events:none;z-index:0}
-.star{
-  position:absolute;width:2px;height:2px;
-  background:#fff;border-radius:50%;
-  opacity:.6;animation:twinkle 3s infinite;
-}
-@keyframes twinkle{50%{opacity:1}}
-
-/* ===== Confetti ===== */
-.confetti{position:fixed;inset:0;pointer-events:none;z-index:1}
-.paper{
-  position:absolute;top:-20px;width:8px;height:14px;
-  animation:fall linear infinite;
-}
-@keyframes fall{
-  to{transform:translateY(120vh) rotate(360deg);opacity:0}
-}
-
-/* ===== Hearts ===== */
-.hearts{position:fixed;inset:0;pointer-events:none;z-index:1}
-.bg-heart{
-  position:absolute;bottom:-20px;
-  animation:floatUp linear infinite;opacity:.5;
-}
-@keyframes floatUp{
-  to{transform:translateY(-120vh);opacity:0}
-}
-
 /* ===== Card ===== */
 .card{
   background:#0f0f0f;
-  backdrop-filter:blur(18px);
-  border:1px solid rgba(255,255,255,.15);
   max-width:440px;
   width:92%;
   padding:32px;
   border-radius:26px;
-  box-shadow:
-    0 25px 60px rgba(0,0,0,.6),
-    0 0 40px rgba(255,79,135,.25);
-  position:relative;z-index:5;
-  animation:breath 6s ease-in-out infinite;
+  box-shadow:0 25px 60px rgba(0,0,0,.6);
+  transition:transform .15s ease, box-shadow .2s ease;
 }
-@keyframes breath{50%{transform:scale(1.02)}}
-
-/* ===== Entrance Animations ===== */
-@keyframes fromLeft{from{opacity:0;transform:translateX(-60px)}to{opacity:1}}
-@keyframes fromRight{from{opacity:0;transform:translateX(60px)}to{opacity:1}}
-@keyframes fromTop{from{opacity:0;transform:translateY(-60px)}to{opacity:1}}
-@keyframes fromBottom{from{opacity:0;transform:translateY(60px)}to{opacity:1}}
-
-.enter-left{animation:fromLeft .9s ease}
-.enter-right{animation:fromRight .9s ease}
-.enter-top{animation:fromTop .9s ease}
-.enter-bottom{animation:fromBottom .9s ease}
 
 /* ===== Name ===== */
 .name{
   font-size:32px;
   color:#ff4f87;
-  animation:glow 2.5s infinite alternate,pulse 2s infinite;
+  animation:pulse 2.4s infinite;
 }
-@keyframes glow{
-  from{
-    text-shadow:
-      0 0 10px rgba(255,79,135,.6),
-      0 0 20px rgba(255,79,135,.7);
-  }
-  to{
-    text-shadow:
-      0 0 20px rgba(255,79,135,.9),
-      0 0 40px rgba(255,79,135,1);
-  }
-}
-@keyframes pulse{50%{transform:scale(1.06)}}
+@keyframes pulse{50%{transform:scale(1.04)}}
 .subtitle{color:#ffd6e3}
 
 /* ===== Slider ===== */
@@ -103,78 +44,84 @@ body{
   width:100%;
   height:360px;
   margin:20px 0;
-  overflow:hidden
+  overflow:hidden;
+  position:relative;
 }
-.slides{display:flex;width:300%;animation:slide 12s infinite}
-@keyframes slide{33%{transform:translateX(-100%)}66%{transform:translateX(-200%)}}
-.heart-img{width:100%;display:flex;justify-content:center}
+.slides{position:relative;height:100%}
+
+.heart-img{
+  position:absolute;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  opacity:0;
+  animation:fadeSlide 18s infinite;
+}
+.heart-img:nth-child(1){animation-delay:0s}
+.heart-img:nth-child(2){animation-delay:6s}
+.heart-img:nth-child(3){animation-delay:12s}
+
+@keyframes fadeSlide{
+  0%{opacity:0}
+  12%{opacity:1}
+  35%{opacity:1}
+  45%{opacity:0}
+  100%{opacity:0}
+}
+
 .heart-img img{
   width:220px;
   height:280px;
   object-fit:cover;
-  animation:zoomSoft 8s infinite;
-  border-radius:18px; /* ✅ مربع */
+  border-radius:18px;
+  transition:box-shadow .2s ease;
 }
-@keyframes zoomSoft{50%{transform:scale(1.08)}}
 
-/* ===== Dark Boxes ===== */
+/* ===== Boxes ===== */
 .box{
   background:rgba(90,20,45,.85);
-  padding:18px;border-radius:22px;
+  padding:18px;
+  border-radius:22px;
   margin-top:14px;
-  box-shadow:
-    0 0 25px rgba(255,79,135,.45),
-    inset 0 0 15px rgba(255,255,255,.05);
 }
-.big{
-  font-size:22px;
-  color:#ff9bbb;
-  font-weight:bold;
-  text-shadow:0 0 12px rgba(255,155,187,.8);
-}
+.big{font-size:22px;color:#ff9bbb;font-weight:bold}
 .small{font-size:14px;color:#ffd6e3}
 
 /* ===== Messages ===== */
 .message{
   background:rgba(90,20,45,.85);
   color:#ffb6c1;
-  padding:18px;border-radius:22px;
-  margin-top:16px;line-height:1.8;
-  box-shadow:
-    0 0 25px rgba(255,79,135,.4),
-    inset 0 0 15px rgba(255,255,255,.05);
+  padding:18px;
+  border-radius:22px;
+  margin-top:16px;
+  line-height:1.8;
+  transition:box-shadow .2s ease;
 }
 .hidden{display:none}
 
 /* ===== Buttons ===== */
 .btn{
-  margin-top:18px;padding:12px 26px;
-  border:none;border-radius:22px;
+  margin-top:18px;
+  padding:12px 26px;
+  border:none;
+  border-radius:22px;
   background:#ff1e6e;
   color:#fff;
-  cursor:pointer;font-size:14px;
-  box-shadow:
-    0 8px 25px rgba(255,30,110,.6),
-    0 0 30px rgba(255,30,110,.7);
+  cursor:pointer;
 }
 
-/* ===== Signature ===== */
 .signature{margin-top:18px;color:#ffd6e3;font-size:14px;opacity:.9}
 </style>
 </head>
 
 <body>
 
-<div class="stars" id="stars"></div>
-<div class="confetti" id="confetti"></div>
-<div class="hearts" id="hearts"></div>
+<div class="card" id="card">
+  <h1 class="name" id="title">Tota ♥️</h1>
+  <p class="subtitle">أجمل إنسانة في الكون 🌎</p>
 
-<div class="card">
-
-  <h1 class="name enter-top">Tota ♥️</h1>
-  <p class="subtitle enter-bottom">أجمل إنسانة في الكون 🌎</p>
-
-  <div class="slider enter-left">
+  <div class="slider">
     <div class="slides">
       <div class="heart-img"><img src="photo1.jpg"></div>
       <div class="heart-img"><img src="photo2.jpg"></div>
@@ -182,77 +129,36 @@ body{
     </div>
   </div>
 
-  <div class="box enter-right">
+  <div class="box">
     <div class="big" id="days"></div>
     <div class="small">أيام صداقتنا 💕</div>
   </div>
 
-  <div class="message enter-bottom">
-    🎂 كل سنة وإنتي طيبة يا توته ❤️  
-    <br><br>
-    إنتي صديقة مفضلة 🌸  
-    وجودك في حياتي فرق كتير 🤍  
-    <br><br>
-    وأتمنى نفضل صحاب طول العمر 🫂  
-    وأنا دايمًا جنبك 💖
+  <div class="message">
+    النهارده يوم مميز 🎉✨ عشان عيد ميلاد توتتي 🥳🎂
+كبرتي سنة ⏳ بس لسه زي القمر 🌙💫 ومفيش كلام بعد كده 😜
+ضحكتك 😂💖 بتغير المود 🌈 ووجودك 🤍 بيخلّي أي قعدة أحلى 🪑✨
+ونفضل مع بعض دايمًا 🫶🤝 نضحك 😆 ونهزر 😂 ونستحمل بعض بالعافية 😜💞
+كل سنة وإنتِ طيبة 🎂💙 يا قمر 🌙✨
   </div>
 
-  <button class="btn enter-left" onclick="toggleHidden()">💌 رسالة مخفية</button>
+  <button class="btn" onclick="toggleHidden()">💌 رسالة مخفية</button>
   <div class="message hidden" id="hiddenMsg">
-   بحب اشوفك مبسوطه معرفش ليه 
-    بس بحب كده ✨ وأتمنى نفضل صحاب علطول 
-    و منزعلش من بعض ولو زعلانه نتكلم علطول 
-    مش نستني انتي تكلمني او انا اكلم 
-    لا نقول علطول و في نفس اليوم بس كده😘♥️
+ بحب أشوفك مبسوطة وده بيفرق معايا فعلًا 😊✨ معرفش ليه بس بحسها حاجة حلوة
+وأتمنى نفضل صحاب علطول 🤝🤍 ومنزعلش من بعض مهما حصل
+ولو زعلانة نتكلم على طول 🗣️💬 من غير تردد
+مش نستنى لا إنتِ تكلّميني ولا أنا أكلم ⏳❌
+نقول كل حاجة في نفس اليوم عشان نفضل مرتاحين مع بعض 🌿✨
+بس كده 😊♥️
   </div>
 
-  <button class="btn enter-right" onclick="window.print()">📸 حفظ الصفحة كذكرى</button>
-
-  <div class="signature enter-bottom">— Noveer</div>
-
+  <div class="signature">— Noveer</div>
 </div>
 
-<audio id="music" src="music.mp3" autoplay loop muted></audio>
+<audio id="music" src="1.mp3" autoplay loop muted></audio>
 
 <script>
-/* تشغيل الموسيقى تلقائيًا */
-window.addEventListener("load",()=>{
-  const music=document.getElementById("music");
-  music.muted=false;
-  music.play();
-});
-
-/* Stars */
-for(let i=0;i<120;i++){
-  const s=document.createElement("div");
-  s.className="star";
-  s.style.left=Math.random()*100+"vw";
-  s.style.top=Math.random()*100+"vh";
-  stars.appendChild(s);
-}
-
-/* Confetti */
-for(let i=0;i<60;i++){
-  const p=document.createElement("div");
-  p.className="paper";
-  p.style.left=Math.random()*100+"vw";
-  p.style.background=`hsl(${Math.random()*360},80%,60%)`;
-  p.style.animationDuration=3+Math.random()*5+"s";
-  confetti.appendChild(p);
-}
-
-/* Hearts */
-setInterval(()=>{
-  const h=document.createElement("div");
-  h.className="bg-heart";
-  h.textContent="❤️";
-  h.style.left=Math.random()*100+"vw";
-  h.style.animationDuration=6+Math.random()*6+"s";
-  hearts.appendChild(h);
-  setTimeout(()=>h.remove(),12000);
-},500);
-
-/* Counter */
+/* ===== Counter ===== */
 const start=new Date("2024-08-26T00:00:00");
 setInterval(()=>{
   const diff=new Date()-start;
@@ -266,6 +172,59 @@ function toggleHidden(){
   hiddenMsg.style.display =
     hiddenMsg.style.display==="block"?"none":"block";
 }
+
+/* ===== Music Reactive (Glow + Card Breathing) ===== */
+window.addEventListener("load",()=>{
+  const audio=document.getElementById("music");
+  audio.muted=false;
+  audio.play();
+
+  const ctx=new (window.AudioContext||window.webkitAudioContext)();
+  const src=ctx.createMediaElementSource(audio);
+  const analyser=ctx.createAnalyser();
+  analyser.fftSize=128;
+
+  src.connect(analyser);
+  analyser.connect(ctx.destination);
+
+  const data=new Uint8Array(analyser.frequencyBinCount);
+  const imgs=document.querySelectorAll(".heart-img img");
+  const title=document.getElementById("title");
+  const hidden=document.getElementById("hiddenMsg");
+  const card=document.getElementById("card");
+
+  function animate(){
+    analyser.getByteFrequencyData(data);
+    let avg=data.reduce((a,b)=>a+b,0)/data.length;
+    let power=Math.min(avg/260,1); // ناعم
+
+    /* الصور */
+    imgs.forEach(img=>{
+      img.style.boxShadow=
+        `0 0 ${16+power*30}px rgba(255,79,135,${0.25+power*0.35})`;
+    });
+
+    /* العنوان */
+    title.style.textShadow=
+      `0 0 ${14+power*26}px rgba(255,79,135,${0.45+power*0.3})`;
+
+    /* الرسالة المخفية */
+    if(hidden.style.display==="block"){
+      hidden.style.boxShadow=
+        `0 0 ${14+power*26}px rgba(255,79,135,${0.35+power*0.35})`;
+    }
+
+    /* تنفس الكارت */
+    const scale=1 + power*0.035;
+    card.style.transform=`scale(${scale})`;
+    card.style.boxShadow=
+      `0 25px 60px rgba(0,0,0,.6),
+       0 0 ${30+power*50}px rgba(255,79,135,${0.25+power*0.35})`;
+
+    requestAnimationFrame(animate);
+  }
+  animate();
+});
 </script>
 
 </body>
