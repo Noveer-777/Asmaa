@@ -17,6 +17,49 @@ body{
   align-items:flex-start;
   text-align:center;
   padding:20px 0;
+  overflow:hidden;
+}
+
+/* ===== Hearts ===== */
+.hearts{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+.bg-heart{
+  position:absolute;
+  bottom:-60px;
+  font-size:48px;
+  opacity:.5;
+  animation:heartUp linear infinite;
+}
+@keyframes heartUp{
+  to{
+    transform:translateY(-120vh);
+    opacity:0;
+  }
+}
+
+/* ===== Cakes ===== */
+.cakes{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+.cake{
+  position:absolute;
+  top:-60px;
+  font-size:40px;
+  opacity:.6;
+  animation:cakeDown linear infinite;
+}
+@keyframes cakeDown{
+  to{
+    transform:translateY(120vh);
+    opacity:0;
+  }
 }
 
 /* ===== Card ===== */
@@ -28,45 +71,20 @@ body{
   border-radius:26px;
   box-shadow:0 25px 60px rgba(0,0,0,.6);
   position:relative;
-  overflow:auto;
+  z-index:5;
 }
 
-/* ===== Entrance Animations ===== */
-@keyframes fromTop{from{opacity:0;transform:translateY(-60px)}to{opacity:1;transform:none}}
-@keyframes fromBottom{from{opacity:0;transform:translateY(60px)}to{opacity:1;transform:none}}
-@keyframes fromLeft{from{opacity:0;transform:translateX(-60px)}to{opacity:1;transform:none}}
-@keyframes fromRight{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:none}}
-
-.enter-top{animation:fromTop .9s ease forwards}
-.enter-bottom{animation:fromBottom .9s ease forwards}
-.enter-left{animation:fromLeft .9s ease forwards}
-.enter-right{animation:fromRight .9s ease forwards}
-
-/* ===== Name ===== */
-.name{
-  font-size:32px;
-  color:#ff4f87;
-}
+/* ===== باقي الكود زي ما هو ===== */
+.name{font-size:32px;color:#ff4f87}
 .subtitle{color:#ffd6e3}
 
-/* ===== Slider ===== */
-.slider{
-  width:100%;
-  height:360px;
-  margin:20px 0;
-  overflow:hidden;
-  position:relative;
-}
+.slider{width:100%;height:360px;margin:20px 0;overflow:hidden;position:relative}
 .slides{position:relative;height:100%}
 
 .heart-img{
-  position:absolute;
-  inset:0;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  opacity:0;
-  animation:fadeSlide 18s infinite;
+  position:absolute;inset:0;
+  display:flex;justify-content:center;align-items:center;
+  opacity:0;animation:fadeSlide 18s infinite;
 }
 .heart-img:nth-child(1){animation-delay:0s}
 .heart-img:nth-child(2){animation-delay:6s}
@@ -81,57 +99,44 @@ body{
 }
 
 .heart-img img{
-  width:220px;
-  height:280px;
-  object-fit:cover;
-  border-radius:18px;
-  transition:box-shadow .25s ease;
+  width:220px;height:280px;
+  object-fit:cover;border-radius:18px;
 }
 
-/* ===== Boxes ===== */
-.box{
-  background:rgba(90,20,45,.85);
-  padding:18px;
-  border-radius:22px;
-  margin-top:14px;
-}
+.box{background:rgba(90,20,45,.85);padding:18px;border-radius:22px;margin-top:14px}
 .big{font-size:22px;color:#ff9bbb;font-weight:bold}
 .small{font-size:14px;color:#ffd6e3}
 
-/* ===== Messages ===== */
 .message{
   background:rgba(90,20,45,.85);
   color:#ffb6c1;
-  padding:18px;
-  border-radius:22px;
-  margin-top:16px;
-  line-height:1.8;
+  padding:18px;border-radius:22px;
+  margin-top:16px;line-height:1.8;
 }
 .hidden{display:none}
 
-/* ===== Buttons ===== */
 .btn{
-  margin-top:18px;
-  padding:12px 26px;
-  border:none;
-  border-radius:22px;
-  background:#ff1e6e;
-  color:#fff;
-  cursor:pointer;
+  margin-top:18px;padding:12px 26px;
+  border:none;border-radius:22px;
+  background:#ff1e6e;color:#fff;cursor:pointer;
 }
-
 .signature{margin-top:18px;color:#ffd6e3;font-size:14px;opacity:.9}
 </style>
 </head>
 
 <body>
 
+<!-- 🎂 Cakes -->
+<div class="cakes" id="cakes"></div>
+
+<!-- ❤️ Hearts -->
+<div class="hearts" id="hearts"></div>
+
 <div class="card">
+  <h1 class="name">Tota ♥️</h1>
+  <p class="subtitle">أجمل إنسانة في الكون 🌎</p>
 
-  <h1 class="name enter-top" id="title">Tota ♥️</h1>
-  <p class="subtitle enter-bottom">أجمل إنسانة في الكون 🌎</p>
-
-  <div class="slider enter-left">
+  <div class="slider">
     <div class="slides">
       <div class="heart-img"><img src="photo1.jpg"></div>
       <div class="heart-img"><img src="photo2.jpg"></div>
@@ -139,28 +144,24 @@ body{
     </div>
   </div>
 
-  <div class="box enter-right">
+  <div class="box">
     <div class="big" id="days"></div>
     <div class="small">أيام صداقتنا 💕</div>
   </div>
 
-  <div class="message enter-bottom">
-    كل سنة وإنتي طيبة يا توته ❤️
-  </div>
+  <div class="message">كل سنة وإنتي طيبة يا توته ❤️</div>
 
-  <button class="btn enter-left" onclick="toggleHidden()">💌 رسالة مخفية</button>
-  <div class="message hidden" id="hiddenMsg">
-    وجودك في حياتي فرق كتير 🤍
-  </div>
+  <button class="btn" onclick="toggleHidden()">💌 رسالة مخفية</button>
+  <div class="message hidden" id="hiddenMsg">وجودك في حياتي فرق كتير 🤍</div>
 
-  <div class="signature enter-bottom">— Noveer</div>
+  <div class="signature">— Noveer</div>
 </div>
 
 <!-- 🎵 MUSIC FILE -->
-<audio id="music" src="1.mp3" autoplay loop muted></audio>
+<audio id="music" src="1.mp3" autoplay loop></audio>
 
 <script>
-/* ===== Counter ===== */
+/* Counter */
 const start=new Date("2024-08-26T00:00:00");
 setInterval(()=>{
   const diff=new Date()-start;
@@ -175,37 +176,27 @@ function toggleHidden(){
     hiddenMsg.style.display==="block"?"none":"block";
 }
 
-/* ===== Music Light Around Images ONLY ===== */
-window.addEventListener("load",()=>{
-  const audio=document.getElementById("music");
-  audio.muted=false;
-  audio.play();
+/* Hearts */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="bg-heart";
+  h.textContent="❤️";
+  h.style.left=Math.random()*100+"vw";
+  h.style.animationDuration=6+Math.random()*6+"s";
+  hearts.appendChild(h);
+  setTimeout(()=>h.remove(),12000);
+},400);
 
-  const ctx=new (window.AudioContext||window.webkitAudioContext)();
-  const src=ctx.createMediaElementSource(audio);
-  const analyser=ctx.createAnalyser();
-  analyser.fftSize=128;
-
-  src.connect(analyser);
-  analyser.connect(ctx.destination);
-
-  const data=new Uint8Array(analyser.frequencyBinCount);
-  const imgs=document.querySelectorAll(".heart-img img");
-
-  function animate(){
-    analyser.getByteFrequencyData(data);
-    let avg=data.reduce((a,b)=>a+b,0)/data.length;
-    let power=Math.min(avg/230,1);
-
-    imgs.forEach(img=>{
-      img.style.boxShadow=
-        `0 0 ${25+power*50}px rgba(255,79,135,${0.35+power*0.45})`;
-    });
-
-    requestAnimationFrame(animate);
-  }
-  animate();
-});
+/* Cakes */
+setInterval(()=>{
+  const c=document.createElement("div");
+  c.className="cake";
+  c.textContent="🎂";
+  c.style.left=Math.random()*100+"vw";
+  c.style.animationDuration=6+Math.random()*6+"s";
+  cakes.appendChild(c);
+  setTimeout(()=>c.remove(),12000);
+},600);
 </script>
 
 </body>
