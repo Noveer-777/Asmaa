@@ -27,16 +27,14 @@ body{
   padding:32px;
   border-radius:26px;
   box-shadow:0 25px 60px rgba(0,0,0,.6);
-  transition:transform .15s ease, box-shadow .2s ease;
+  transition:transform .1s ease, box-shadow .15s ease;
 }
 
 /* ===== Name ===== */
 .name{
   font-size:32px;
   color:#ff4f87;
-  animation:pulse 2.4s infinite;
 }
-@keyframes pulse{50%{transform:scale(1.04)}}
 .subtitle{color:#ffd6e3}
 
 /* ===== Slider ===== */
@@ -64,9 +62,9 @@ body{
 
 @keyframes fadeSlide{
   0%{opacity:0}
-  12%{opacity:1}
-  35%{opacity:1}
-  45%{opacity:0}
+  10%{opacity:1}
+  40%{opacity:1}
+  50%{opacity:0}
   100%{opacity:0}
 }
 
@@ -75,7 +73,7 @@ body{
   height:280px;
   object-fit:cover;
   border-radius:18px;
-  transition:box-shadow .2s ease;
+  transition:box-shadow .1s ease, transform .1s ease;
 }
 
 /* ===== Boxes ===== */
@@ -96,7 +94,7 @@ body{
   border-radius:22px;
   margin-top:16px;
   line-height:1.8;
-  transition:box-shadow .2s ease;
+  transition:box-shadow .15s ease;
 }
 .hidden{display:none}
 
@@ -135,21 +133,18 @@ body{
   </div>
 
   <div class="message">
-    النهارده يوم مميز 🎉✨ عشان عيد ميلاد توتتي 🥳🎂
-    <br><br>
-    كل سنة وإنتِ طيبة 🎂💙 يا قمر 🌙✨
+    كل سنة وإنتي طيبة يا توته ❤️  
   </div>
 
   <button class="btn" onclick="toggleHidden()">💌 رسالة مخفية</button>
   <div class="message hidden" id="hiddenMsg">
-    أتمنى نفضل صحاب علطول 🤍
+    وجودك في حياتي فرق كتير 🤍
   </div>
 
   <div class="signature">— Noveer</div>
 </div>
 
-<!-- ✅ اسم الموسيقى -->
-<audio id="music" src="1.mp3" loop></audio>
+<audio id="music" src="1.mp3" autoplay loop muted></audio>
 
 <script>
 /* ===== Counter ===== */
@@ -167,57 +162,64 @@ function toggleHidden(){
     hiddenMsg.style.display==="block"?"none":"block";
 }
 
-/* ===== تشغيل الموسيقى بعد أول لمسة (الحل النهائي) ===== */
-const audio=document.getElementById("music");
+/* ===== BASS REACTIVE SYSTEM 🔊🔥 ===== */
+window.addEventListener("load",()=>{
+  const audio=document.getElementById("music");
+  audio.muted=false;
+  audio.play();
 
-function startMusic(){
-  audio.play().then(()=>{
-    document.removeEventListener("click", startMusic);
-    document.removeEventListener("touchstart", startMusic);
-  }).catch(()=>{});
-}
+  const ctx=new (window.AudioContext||window.webkitAudioContext)();
+  const src=ctx.createMediaElementSource(audio);
+  const analyser=ctx.createAnalyser();
+  analyser.fftSize=256;
 
-document.addEventListener("click", startMusic);
-document.addEventListener("touchstart", startMusic);
+  src.connect(analyser);
+  analyser.connect(ctx.destination);
 
-/* ===== Music Reactive ===== */
-const ctx=new (window.AudioContext||window.webkitAudioContext)();
-const src=ctx.createMediaElementSource(audio);
-const analyser=ctx.createAnalyser();
-analyser.fftSize=128;
-src.connect(analyser);
-analyser.connect(ctx.destination);
+  const data=new Uint8Array(analyser.frequencyBinCount);
+  const imgs=document.querySelectorAll(".heart-img img");
+  const title=document.getElementById("title");
+  const hidden=document.getElementById("hiddenMsg");
+  const card=document.getElementById("card");
 
-const data=new Uint8Array(analyser.frequencyBinCount);
-const imgs=document.querySelectorAll(".heart-img img");
-const title=document.getElementById("title");
-const hidden=document.getElementById("hiddenMsg");
-const card=document.getElementById("card");
+  function animate(){
+    analyser.getByteFrequencyData(data);
 
-function animate(){
-  analyser.getByteFrequencyData(data);
-  let avg=data.reduce((a,b)=>a+b,0)/data.length;
-  let power=Math.min(avg/260,1);
+    /* 🎵 BASS فقط (أول 20 تردد) */
+    let bass=0;
+    for(let i=0;i<20;i++) bass+=data[i];
+    bass/=20;
 
-  imgs.forEach(img=>{
-    img.style.boxShadow=
-      `0 0 ${16+power*30}px rgba(255,79,135,${0.25+power*0.35})`;
-  });
+    let power=Math.min(bass/180,1);
 
-  title.style.textShadow=
-    `0 0 ${14+power*26}px rgba(255,79,135,${0.45+power*0.3})`;
+    /* الصور */
+    imgs.forEach(img=>{
+      img.style.transform=`scale(${1+power*0.12})`;
+      img.style.boxShadow=
+        `0 0 ${40+power*120}px rgba(255,79,135,${0.6+power*0.6})`;
+    });
 
-  if(hidden.style.display==="block"){
-    hidden.style.boxShadow=
-      `0 0 ${14+power*26}px rgba(255,79,135,${0.35+power*0.35})`;
+    /* الاسم */
+    title.style.textShadow=
+      `0 0 ${40+power*120}px rgba(255,79,135,${0.8+power*0.6})`;
+
+    /* الرسالة المخفية */
+    if(hidden.style.display==="block"){
+      hidden.style.boxShadow=
+        `0 0 ${40+power*120}px rgba(255,79,135,${0.6+power*0.6})`;
+    }
+
+    /* الكارت */
+    const scale=1 + power*0.08;
+    card.style.transform=`scale(${scale})`;
+    card.style.boxShadow=
+      `0 25px 60px rgba(0,0,0,.6),
+       0 0 ${70+power*180}px rgba(255,79,135,${0.5+power*0.6})`;
+
+    requestAnimationFrame(animate);
   }
-
-  const scale=1 + power*0.035;
-  card.style.transform=`scale(${scale})`;
-
-  requestAnimationFrame(animate);
-}
-animate();
+  animate();
+});
 </script>
 
 </body>
