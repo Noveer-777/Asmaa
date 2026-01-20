@@ -136,26 +136,20 @@ body{
 
   <div class="message">
     النهارده يوم مميز 🎉✨ عشان عيد ميلاد توتتي 🥳🎂
-كبرتي سنة ⏳ بس لسه زي القمر 🌙💫 ومفيش كلام بعد كده 😜
-ضحكتك 😂💖 بتغير المود 🌈 ووجودك 🤍 بيخلّي أي قعدة أحلى 🪑✨
-ونفضل مع بعض دايمًا 🫶🤝 نضحك 😆 ونهزر 😂 ونستحمل بعض بالعافية 😜💞
-كل سنة وإنتِ طيبة 🎂💙 يا قمر 🌙✨
+    <br><br>
+    كل سنة وإنتِ طيبة 🎂💙 يا قمر 🌙✨
   </div>
 
   <button class="btn" onclick="toggleHidden()">💌 رسالة مخفية</button>
   <div class="message hidden" id="hiddenMsg">
- بحب أشوفك مبسوطة وده بيفرق معايا فعلًا 😊✨ معرفش ليه بس بحسها حاجة حلوة
-وأتمنى نفضل صحاب علطول 🤝🤍 ومنزعلش من بعض مهما حصل
-ولو زعلانة نتكلم على طول 🗣️💬 من غير تردد
-مش نستنى لا إنتِ تكلّميني ولا أنا أكلم ⏳❌
-نقول كل حاجة في نفس اليوم عشان نفضل مرتاحين مع بعض 🌿✨
-بس كده 😊♥️
+    أتمنى نفضل صحاب علطول 🤍
   </div>
 
   <div class="signature">— Noveer</div>
 </div>
 
-<audio id="music" src="1.mp3" autoplay loop muted></audio>
+<!-- ✅ اسم الموسيقى -->
+<audio id="music" src="1.mp3" loop></audio>
 
 <script>
 /* ===== Counter ===== */
@@ -173,58 +167,57 @@ function toggleHidden(){
     hiddenMsg.style.display==="block"?"none":"block";
 }
 
-/* ===== Music Reactive (Glow + Card Breathing) ===== */
-window.addEventListener("load",()=>{
-  const audio=document.getElementById("music");
-  audio.muted=false;
-  audio.play();
+/* ===== تشغيل الموسيقى بعد أول لمسة (الحل النهائي) ===== */
+const audio=document.getElementById("music");
 
-  const ctx=new (window.AudioContext||window.webkitAudioContext)();
-  const src=ctx.createMediaElementSource(audio);
-  const analyser=ctx.createAnalyser();
-  analyser.fftSize=128;
+function startMusic(){
+  audio.play().then(()=>{
+    document.removeEventListener("click", startMusic);
+    document.removeEventListener("touchstart", startMusic);
+  }).catch(()=>{});
+}
 
-  src.connect(analyser);
-  analyser.connect(ctx.destination);
+document.addEventListener("click", startMusic);
+document.addEventListener("touchstart", startMusic);
 
-  const data=new Uint8Array(analyser.frequencyBinCount);
-  const imgs=document.querySelectorAll(".heart-img img");
-  const title=document.getElementById("title");
-  const hidden=document.getElementById("hiddenMsg");
-  const card=document.getElementById("card");
+/* ===== Music Reactive ===== */
+const ctx=new (window.AudioContext||window.webkitAudioContext)();
+const src=ctx.createMediaElementSource(audio);
+const analyser=ctx.createAnalyser();
+analyser.fftSize=128;
+src.connect(analyser);
+analyser.connect(ctx.destination);
 
-  function animate(){
-    analyser.getByteFrequencyData(data);
-    let avg=data.reduce((a,b)=>a+b,0)/data.length;
-    let power=Math.min(avg/260,1); // ناعم
+const data=new Uint8Array(analyser.frequencyBinCount);
+const imgs=document.querySelectorAll(".heart-img img");
+const title=document.getElementById("title");
+const hidden=document.getElementById("hiddenMsg");
+const card=document.getElementById("card");
 
-    /* الصور */
-    imgs.forEach(img=>{
-      img.style.boxShadow=
-        `0 0 ${16+power*30}px rgba(255,79,135,${0.25+power*0.35})`;
-    });
+function animate(){
+  analyser.getByteFrequencyData(data);
+  let avg=data.reduce((a,b)=>a+b,0)/data.length;
+  let power=Math.min(avg/260,1);
 
-    /* العنوان */
-    title.style.textShadow=
-      `0 0 ${14+power*26}px rgba(255,79,135,${0.45+power*0.3})`;
+  imgs.forEach(img=>{
+    img.style.boxShadow=
+      `0 0 ${16+power*30}px rgba(255,79,135,${0.25+power*0.35})`;
+  });
 
-    /* الرسالة المخفية */
-    if(hidden.style.display==="block"){
-      hidden.style.boxShadow=
-        `0 0 ${14+power*26}px rgba(255,79,135,${0.35+power*0.35})`;
-    }
+  title.style.textShadow=
+    `0 0 ${14+power*26}px rgba(255,79,135,${0.45+power*0.3})`;
 
-    /* تنفس الكارت */
-    const scale=1 + power*0.035;
-    card.style.transform=`scale(${scale})`;
-    card.style.boxShadow=
-      `0 25px 60px rgba(0,0,0,.6),
-       0 0 ${30+power*50}px rgba(255,79,135,${0.25+power*0.35})`;
-
-    requestAnimationFrame(animate);
+  if(hidden.style.display==="block"){
+    hidden.style.boxShadow=
+      `0 0 ${14+power*26}px rgba(255,79,135,${0.35+power*0.35})`;
   }
-  animate();
-});
+
+  const scale=1 + power*0.035;
+  card.style.transform=`scale(${scale})`;
+
+  requestAnimationFrame(animate);
+}
+animate();
 </script>
 
 </body>
