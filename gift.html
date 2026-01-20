@@ -8,7 +8,6 @@
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
 
-/* ===== Background ===== */
 body{
   margin:0;
   min-height:100vh;
@@ -21,13 +20,14 @@ body{
   overflow-y:auto;
 }
 
-/* ===== Hearts ===== */
-.hearts{
+/* ===== Hearts & Cakes ===== */
+.hearts,.cakes{
   position:fixed;
   inset:0;
   pointer-events:none;
-  z-index:0;
+  z-index:10;
 }
+
 .bg-heart{
   position:absolute;
   bottom:-60px;
@@ -39,13 +39,6 @@ body{
   to{transform:translateY(-120vh);opacity:0}
 }
 
-/* ===== Cakes ===== */
-.cakes{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:0;
-}
 .cake{
   position:absolute;
   top:-60px;
@@ -71,24 +64,27 @@ body{
   z-index:5;
 }
 
+/* ===== Entrance Animations ===== */
+@keyframes fromTop{from{opacity:0;transform:translateY(-60px)}to{opacity:1}}
+@keyframes fromBottom{from{opacity:0;transform:translateY(60px)}to{opacity:1}}
+@keyframes fromLeft{from{opacity:0;transform:translateX(-60px)}to{opacity:1}}
+@keyframes fromRight{from{opacity:0;transform:translateX(60px)}to{opacity:1}}
+
+.enter-top{animation:fromTop .9s ease}
+.enter-bottom{animation:fromBottom .9s ease}
+.enter-left{animation:fromLeft .9s ease}
+.enter-right{animation:fromRight .9s ease}
+
 /* ===== Text ===== */
 .name{
   font-size:32px;
   color:#ff3b8d;
   text-shadow:0 0 18px rgba(255,59,141,.8);
 }
-.subtitle{
-  color:#ffc9da;
-}
+.subtitle{color:#ffc9da}
 
 /* ===== Slider ===== */
-.slider{
-  width:100%;
-  height:360px;
-  margin:20px 0;
-  overflow:hidden;
-  position:relative;
-}
+.slider{width:100%;height:360px;margin:20px 0;overflow:hidden;position:relative}
 .slides{position:relative;height:100%}
 
 .heart-img{
@@ -120,35 +116,18 @@ body{
   box-shadow:0 0 40px rgba(255,40,120,.45);
 }
 
-/* ===== Boxes ===== */
-.box{
+/* ===== Boxes & Messages ===== */
+.box,.message{
   background:rgba(120,35,65,.9);
   padding:18px;
   border-radius:22px;
   margin-top:14px;
-}
-.big{
-  font-size:22px;
-  color:#ff9fc4;
-  font-weight:bold;
-}
-.small{
-  font-size:14px;
-  color:#ffd9e7;
-}
-
-/* ===== Messages ===== */
-.message{
-  background:rgba(120,35,65,.9);
   color:#ffd1e3;
-  padding:18px;
-  border-radius:22px;
-  margin-top:16px;
-  line-height:1.8;
 }
+.big{font-size:22px;color:#ff9fc4;font-weight:bold}
+.small{font-size:14px;color:#ffd9e7}
 .hidden{display:none}
 
-/* ===== Buttons ===== */
 .btn{
   margin-top:18px;
   padding:12px 26px;
@@ -157,15 +136,22 @@ body{
   background:#ff1f7a;
   color:#fff;
   cursor:pointer;
-  box-shadow:0 0 30px rgba(255,31,122,.7);
 }
 
-/* ===== Signature ===== */
-.signature{
-  margin-top:18px;
-  color:#ffb6d2;
+.signature{margin-top:18px;color:#ffb6d2;font-size:14px}
+
+/* ===== Note ===== */
+.note-box textarea{
+  width:100%;
+  height:100px;
+  background:#1a1a1a;
+  color:#ffd6e3;
+  border:none;
+  border-radius:14px;
+  padding:10px;
+  resize:none;
+  outline:none;
   font-size:14px;
-  opacity:.9;
 }
 </style>
 </head>
@@ -176,10 +162,10 @@ body{
 <div class="hearts" id="hearts"></div>
 
 <div class="card">
-  <h1 class="name">Hello Tota ❤️</h1>
-  <p class="subtitle">أجمل إنسانة في الكون 🌎</p>
+  <h1 class="name enter-top">Hello Tota ❤️</h1>
+  <p class="subtitle enter-bottom">أجمل إنسانة في الكون 🌎</p>
 
-  <div class="slider">
+  <div class="slider enter-right">
     <div class="slides">
       <div class="heart-img"><img src="photo1.jpg"></div>
       <div class="heart-img"><img src="photo2.jpg"></div>
@@ -187,29 +173,36 @@ body{
     </div>
   </div>
 
-  <div class="box">
+  <div class="box enter-left">
     <div class="big" id="days"></div>
     <div class="small">أيام صداقتنا 💕</div>
   </div>
 
-  <div class="message">كل سنة وإنتي طيبة يا توته ❤️</div>
+  <div class="message enter-bottom">كل سنة وإنتي طيبة يا توته ❤️</div>
 
-  <button class="btn" onclick="toggleHidden()">💌 رسالة مخفية</button>
+  <button class="btn enter-bottom" onclick="toggleHidden()">💌 رسالة مخفية</button>
   <div class="message hidden" id="hiddenMsg">وجودك في حياتي فرق كتير 🤍</div>
 
-  <div class="signature">— Noveer</div>
+  <button class="btn enter-bottom" onclick="toggleNote()">📝 ملاحظة خاصة</button>
+  <div class="message hidden note-box" id="noteBox">
+    <textarea id="noteText" placeholder="اكتب ملاحظتك هنا..."></textarea>
+    <button class="btn" style="margin-top:12px" onclick="saveNote()">💾 Save</button>
+  </div>
+
+  <div class="signature enter-bottom">— Noveer</div>
 </div>
 
-<audio id="music" src="1.mp3" autoplay loop></audio>
+<audio id="music" src="1.mp3" loop></audio>
 
 <script>
+/* ===== Counter ===== */
 const start=new Date("2024-08-26T00:00:00");
 setInterval(()=>{
   const diff=new Date()-start;
-  const d=Math.floor(diff/86400000);
-  const h=Math.floor(diff/3600000)%24;
-  const m=Math.floor(diff/60000)%60;
-  days.textContent=`${d} يوم • ${h} ساعة • ${m} دقيقة`;
+  days.textContent=
+    Math.floor(diff/86400000)+" يوم • "+
+    Math.floor(diff/3600000)%24+" ساعة • "+
+    Math.floor(diff/60000)%60+" دقيقة";
 },1000);
 
 function toggleHidden(){
@@ -217,8 +210,26 @@ function toggleHidden(){
     hiddenMsg.style.display==="block"?"none":"block";
 }
 
+/* ===== Note ===== */
+const noteBox=document.getElementById("noteBox");
+const noteText=document.getElementById("noteText");
+const savedNote=localStorage.getItem("tota_note");
+if(savedNote) noteText.value=savedNote;
+
+function toggleNote(){
+  noteBox.style.display =
+    noteBox.style.display==="block"?"none":"block";
+}
+function saveNote(){
+  localStorage.setItem("tota_note",noteText.value);
+}
+
+/* ===== MUSIC FIX ON REFRESH (ONLY CHANGE) ===== */
 window.addEventListener("load",()=>{
-  document.getElementById("music").play();
+  const music=document.getElementById("music");
+  music.currentTime = 0;   // يرجعها من الأول
+  music.muted = false;
+  music.play();
 
   setInterval(()=>{
     const h=document.createElement("div");
